@@ -38,6 +38,7 @@ class Player:
             self.inv[drug.name] = purchase
         else:
             self.inv[drug.name] += purchase
+        self._money -= price
 
     def sell(self, drug_name: str, quantity: int, price: int) -> None:
         """
@@ -52,6 +53,16 @@ class Player:
         self._money += self.inv[drug_name].sell(quantity, price)
         if self.inv[drug_name].quantity == 0:
             del self.inv[drug_name]
+
+    def print_inv(self) -> None:
+        """
+        Prints styled contents of inventory
+        """
+        if len(self.inv) == 0:
+            print('You have nothing.')
+        else:
+            for key, value in self.inv.items():
+                print(f'{key}: {value.quantity}')
 
 
 

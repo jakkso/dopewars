@@ -45,8 +45,8 @@ class Day:
         """
         Interface for player to buy a drug.
         Decrements the amount available upon purchase.
-        :param quantity: int
         :param drug: str
+        :param quantity: int
         """
         if self._drugs.get(drug) is None:
             return
@@ -60,3 +60,25 @@ class Day:
         """
         price = self._drugs[drug].price
         self.player.sell(drug, quantity, price)
+
+    def get_drugs(self):
+        """
+        Day._drugs has a signature of dict[str: Drug]
+        """
+        return self._drugs
+
+    def print_offerings(self) -> None:
+        """
+        Prints current offerings amounts and price
+        """
+        print('Drug | Price | Quantity')
+        print('-' * 20)
+        for index, (_, drug) in enumerate(self._drugs.items()):
+            print(f'{index + 1}) {drug.name} | ${drug.price} | {drug.quantity}')
+
+    def get_price(self, drug: str) -> int:
+        """
+        :param drug: name of drug, str
+        :return price of drug, int
+        """
+        return self._drugs[drug].price

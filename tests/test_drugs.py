@@ -28,7 +28,7 @@ def test_surge_drug() -> None:
     assert soma.price > 112
     soma = redo_surge(Drug('Soma', 100, 12), 'lo')
     assert 15 <= soma.quantity <= 300
-    assert soma.price <= 76
+    assert soma.price <= 79 # the max price is 0.67 * 100 + 12
     assert soma.price >= 15  # the min price is 15% of base price
 
 

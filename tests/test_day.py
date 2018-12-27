@@ -51,7 +51,3 @@ def test_day_sell() -> None:
     day.sell('Weed', 1)
     assert day.player.money > 500
     assert day.player.inv == {}
-
-
-
-

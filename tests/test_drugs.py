@@ -60,9 +60,10 @@ def test_inv_drug_sell() -> None:
     Test sell method
     """
     soma = InventoryDrug('Soma', 10)
-    too_many = soma.sell(12, 55)
-    assert too_many == 0
-    assert soma.quantity == 10
+    with raises(RuntimeError):
+        too_many = soma.sell(12, 55)
+        assert too_many == 0
+        assert soma.quantity == 10
     sell_all = soma.sell(10, 10)
     assert sell_all == 100
     assert soma.quantity == 0

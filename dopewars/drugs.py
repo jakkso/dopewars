@@ -95,7 +95,7 @@ class InventoryDrug:
         if sale_quant <= 0 or sale_price <= 0:
             raise RuntimeError('Sale price and quantities must be greater than zero')
         if self.quantity < sale_quant:
-            return 0
+            raise RuntimeError('Insufficient quantity')
         self.quantity -= sale_quant
         return sale_quant * sale_price
 

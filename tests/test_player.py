@@ -49,6 +49,8 @@ def test_player_selling_drug() -> None:
         p.sell('Soma', -5, 5)
         p.sell('Coffee', 2, 5)
     p.inv = {'Soma': InventoryDrug('Soma', 10)}
+    with raises(RuntimeError):
+        p.sell('Soma', 11, 5)
     p.sell('Soma', 5, 5)
     assert p.money == 5025
     assert p.inv['Soma'].quantity == 5

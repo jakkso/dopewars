@@ -10,7 +10,7 @@ def test_drug() -> None:
     """
     Test creation of example drug
     """
-    soma = Drug('Soma', 100, 12)
+    soma = redo_surge(Drug('Soma', 100, 12), None)
     assert 112 >= soma.price >= 88  # Due to jitter, price won't be less than 100 +/- 12
     assert 'Soma price: ' in str(soma)
     with raises(RuntimeError):
@@ -23,12 +23,12 @@ def test_surge_drug() -> None:
     Example drug, but with surges, this time.
     The values tested for change each time, but are within certain ranges
     """
-    soma = Drug('Soma', 100, 12, 'hi')
+    soma = redo_surge(Drug('Soma', 100, 12), 'hi')
     assert 33 >= soma.quantity >= 8  #
     assert soma.price > 112
-    soma = Drug('Soma', 100, 12, 'lo')
+    soma = redo_surge(Drug('Soma', 100, 12), 'lo')
     assert 15 <= soma.quantity <= 300
-    assert soma.price <= 112 * .67
+    assert soma.price <= 76
     assert soma.price >= 15  # the min price is 15% of base price
 
 
@@ -75,3 +75,15 @@ def test_inv_drug_sell() -> None:
         soma + 'Hello there!'
 
 
+def redo_surge(drug: Drug, new_surge_val) -> Drug:
+    """
+    Testing utility, changes surge value to new_surge_val, used to by-pass
+    the random element of Drug._calc_surge
+    :param drug: Drug element to be changed
+    :param new_surge_val: None, 'lo' or 'hi' are valid values
+    :return:
+    """
+    drug._surge = new_surge_val
+    drug._calc_price()
+    drug._calc_quantity()
+    return drug

@@ -27,7 +27,7 @@ class Player:
         :param drug:
         :return:
         """
-        if quantity > drug.quantity:
+        if quantity > drug.quantity or quantity <= 0:
             raise RuntimeError('Insufficient quantity')
         price = quantity * drug.price
         if self._money < price:
@@ -48,7 +48,7 @@ class Player:
         :return:
         """
         if self.inv.get(drug_name) is None:
-            raise RuntimeError('Drug not found')
+            raise RuntimeError('Drug not found')  # Shouldn't be needed?
         self._money += self.inv[drug_name].sell(quantity, price)
         if self.inv[drug_name].quantity == 0:
             del self.inv[drug_name]

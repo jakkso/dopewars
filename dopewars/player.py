@@ -39,6 +39,22 @@ class Player:
         else:
             self.inv[drug.name] += purchase
 
+    def sell(self, drug_name: str, quantity: int, price: int) -> None:
+        """
+        Implements sale logic
+        :param drug_name:
+        :param quantity:
+        :param price:
+        :return:
+        """
+        if self.inv.get(drug_name) is None:
+            raise RuntimeError('Drug not found')
+        self._money += self.inv[drug_name].sell(quantity, price)
+        if self.inv[drug_name].quantity == 0:
+            del self.inv[drug_name]
+
+
+
 
 
 

@@ -38,3 +38,23 @@ def test_player_buying_drug() -> None:
         p.buy(soma, 1)
         assert soma.quantity == orig_quantity - 6
 
+
+def test_player_selling_drug() -> None:
+    """
+    Tests that money increases and inv decreases when player sells drug
+    """
+    p = Player('Bob', 5000)
+    with raises(RuntimeError):
+        p.sell('Soma', 5, 5)
+        p.sell('Soma', -5, 5)
+        p.sell('Coffee', 2, 5)
+    p.inv = {'Soma': InventoryDrug('Soma', 10)}
+    p.sell('Soma', 5, 5)
+    assert p.money == 5025
+    assert p.inv['Soma'].quantity == 5
+    p.sell('Soma', 5, 5)
+    assert p.money == 5050
+    assert p.inv.get('Soma') is None
+
+
+

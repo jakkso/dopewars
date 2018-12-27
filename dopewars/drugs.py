@@ -75,7 +75,6 @@ class InventoryDrug:
     """
     def __init__(self, name: str, quantity: int) -> None:
         """
-
         :param name: Drug's name
         :param quantity: amount of drug
         """

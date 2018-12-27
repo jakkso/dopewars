@@ -23,6 +23,8 @@ class Drug:
             If set to hi, the base price is modified to be 1.5-3x as much
             If set to lo, the base price is modified to be 1/3 - 2/3 as much
         """
+        if base_price <= 0 or jitter <= 0:
+            raise RuntimeError('Price and jitter must be larger than 0')
         self._base_price = base_price
         self.name = name
         self._jitter = jitter
@@ -56,7 +58,7 @@ class Drug:
         Calculates amount of drug available for purchase.
         If there is a hi surge, less is available, vice versa for a lo surge
         """
-        base_quant = randint(5, 50)
+        base_quant = randint(5, 100)
         if self._surge == 'hi':
             rv = max(int(base_quant / 3), 8)
         elif self._surge == 'lo':
@@ -77,11 +79,11 @@ class InventoryDrug:
         :param name: Drug's name
         :param quantity: amount of drug
         """
-        self._name = name
-        self._quantity = quantity
+        self.name = name
+        self.quantity = quantity
 
     def __str__(self):
-        return f'{self._name}: {self._quantity}'
+        return f'{self.name}: {self.quantity}'
 
     def sell(self, sale_quant, sale_price: int) -> int:
         """
@@ -91,10 +93,26 @@ class InventoryDrug:
         :param sale_quant: amount to attempt to sell
         :return value of sale
         """
-        if self._quantity < sale_quant:
+        if sale_quant <= 0 or sale_price <= 0:
+            raise RuntimeError('Sale price and quantities must be greater than zero')
+        if self.quantity < sale_quant:
             return 0
-        self._quantity -= sale_quant
+        self.quantity -= sale_quant
         return sale_quant * sale_price
+
+    def __add__(self, other):
+        """
+        Defines how to add two InventoryDrug classes together
+        :param other:
+        :return:
+        """
+        if other.__class__.__name__ != 'InventoryDrug':
+            raise RuntimeError(f'Invalid target for addition: {other.__class__.__name__}')
+        if self.name != other.name:
+            return self
+        self.quantity += other.quantity
+        other.quantity = 0
+        return self
 
 
 

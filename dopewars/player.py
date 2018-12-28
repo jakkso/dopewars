@@ -9,13 +9,14 @@ class Player:
     """
     Defines how the player works, contains money and inventory
     """
+
     def __init__(self, name: str, money: int) -> None:
         self.name = name
         self._money = money
-        self.inv: dict[str: InventoryDrug] = {}
+        self.inv: dict[str:InventoryDrug] = {}
 
     def __str__(self):
-        return f'{self.name}: {self.money}'
+        return f"{self.name}: {self.money}"
 
     @property
     def money(self):
@@ -28,10 +29,10 @@ class Player:
         :return:
         """
         if quantity > drug.quantity or quantity <= 0:
-            raise RuntimeError('Insufficient quantity')
+            raise RuntimeError("Insufficient quantity")
         price = quantity * drug.price
         if self._money < price:
-            raise RuntimeError('Insufficient funds')
+            raise RuntimeError("Insufficient funds")
         purchase = InventoryDrug(drug.name, quantity)
         drug.quantity -= quantity
         if self.inv.get(drug.name) is None:
@@ -49,7 +50,7 @@ class Player:
         :return:
         """
         if self.inv.get(drug_name) is None:
-            raise RuntimeError('Drug not found')  # Shouldn't be needed?
+            raise RuntimeError("Drug not found")  # Shouldn't be needed?
         self._money += self.inv[drug_name].sell(quantity, price)
         if self.inv[drug_name].quantity == 0:
             del self.inv[drug_name]
@@ -59,18 +60,7 @@ class Player:
         Prints styled contents of inventory
         """
         if len(self.inv) == 0:
-            print('You have nothing.')
+            print("You have nothing.")
         else:
             for key, value in self.inv.items():
-                print(f'{key}: {value.quantity}')
-
-
-
-
-
-
-
-
-
-
-
+                print(f"{key}: {value.quantity}")

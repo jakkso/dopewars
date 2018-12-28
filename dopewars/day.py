@@ -4,15 +4,7 @@ Contains implementation of a Day
 
 from random import shuffle
 
-from dopewars.drugs import (Weed,
-                            Luuds,
-                            Coke,
-                            Molly,
-                            Shrooms,
-                            Acid,
-                            Meth,
-                            Heroin,
-                            Drug)
+from dopewars.drugs import Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin, Drug
 from dopewars.player import Player
 
 
@@ -25,11 +17,11 @@ class Day:
     def __init__(self, city: str, player: Player) -> None:
         self.city = city
         self.player = player
-        self._drugs: dict[str: Drug] = {}
+        self._drugs: dict[str:Drug] = {}
         self._generate_drugs()
 
     def __str__(self):
-        return f'City {self.city}'
+        return f"City {self.city}"
 
     def _generate_drugs(self) -> None:
         """
@@ -71,10 +63,10 @@ class Day:
         """
         Prints current offerings amounts and price
         """
-        print('Drug | Price | Quantity')
-        print('-' * 20)
+        print("Drug | Price | Quantity")
+        print("-" * 20)
         for index, (_, drug) in enumerate(self._drugs.items()):
-            print(f'{index + 1}) {drug.name} | ${drug.price} | {drug.quantity}')
+            print(f"{index + 1}) {drug.name} | ${drug.price} | {drug.quantity}")
 
     def get_price(self, drug: str) -> int:
         """

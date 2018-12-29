@@ -73,7 +73,7 @@ class Player:
         """
         stolen = int(randint(5, 15) / 100 * self._money)
         self._money -= stolen
-        return f'A thief stole {stolen} from you!'
+        return f"A thief stole {stolen} from you!"
 
     def steal_drugs(self) -> str:
         """
@@ -82,10 +82,8 @@ class Player:
         :return string describing what was removed
         """
         if not self.inv:
-            return 'Nothing to take!'
+            return "Nothing to take!"
         name, drug = choice(list(self.inv.items()))
         quantity = int(drug.quantity / 4)
         self.sell(name, quantity, price=0)
-        return f'{quantity} of {name} were confiscated!'
-
-
+        return f"{quantity} of {name} were confiscated!"

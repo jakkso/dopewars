@@ -99,21 +99,17 @@ class Day:
             """
             return randint(1, number) == 1
 
-        event, value = choice(list({'robber': 5, 'bod_cop': 10, 'good_cop': 100}.items()))
+        event, value = choice(
+            list({"robber": 5, "bod_cop": 10, "good_cop": 100}.items())
+        )
         chance = get_chance(value)
         if not chance:
             return
-        if event == 'robber':
+        if event == "robber":
             self.event = self.player.steal_money()
-        elif event == 'bad_cop':
-            self.event = 'A corrupt cop stopped you!\n{self.player.steal_drugs()}'
+        elif event == "bad_cop":
+            self.event = "A corrupt cop stopped you!\n{self.player.steal_drugs()}"
         else:
             if self.player.inv:
                 self.end_game = True
-                self.event = 'The ultimate boy scout cop got you, game over!'
-
-
-
-
-
-
+                self.event = "The ultimate boy scout cop got you, game over!"

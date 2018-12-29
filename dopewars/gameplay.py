@@ -150,7 +150,7 @@ class Gameplay:
         print("=" * 20)
         self.current_day.print_offerings()
         print("=" * 20)
-        print(f'${self.player.money}')
+        print(f"${self.player.money}")
         drugs = self.current_day.get_drugs()
         choices = {}
         for index, drug in enumerate(drugs):

@@ -51,3 +51,19 @@ def test_day_sell() -> None:
     day.sell('Weed', 1)
     assert day.player.money > 500
     assert day.player.inv == {}
+
+
+def test_day_event_freq() -> None:
+    """
+    Tests Day._event frequency
+    :return:
+    """
+    p = Player('Bob', 100000)
+    events = []
+    for _ in range(500):
+        d = Day('test', p)
+        if d.event:
+            events.append(1)
+    assert len(events) > 10
+
+

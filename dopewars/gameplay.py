@@ -76,6 +76,11 @@ class Gameplay:
         and Gameplay.buy_menu in order for the player to go back and forth between
         the menus without ending that turn.
         """
+        event = self.current_day.event
+        if event:
+            self.clear()
+            input(event)
+            self.current_day.event = None
         self.clear()
         print("=" * 20)
         print(f"Day {self.current_day_num}")
@@ -144,6 +149,8 @@ class Gameplay:
         self.clear()
         print("=" * 20)
         self.current_day.print_offerings()
+        print("=" * 20)
+        print(f'${self.player.money}')
         drugs = self.current_day.get_drugs()
         choices = {}
         for index, drug in enumerate(drugs):
@@ -192,15 +199,13 @@ class Gameplay:
         Starts and runs the game.
         """
         self.clear()
-        while True:
-            name = input("What is your name: ")
-            if name.strip():
-                break
-        self.player = Player(name, 500)
-        for n in range(1, self.days):
+        self.player = Player(None, 500)
+        for n in range(1, self.days + 1):
             self.current_day_num = n
             day = Day(self.current_city, self.player)
             self.current_day = day
+            if day.end_game:
+                break
             self.play_menu()
         final_score = self.current_day.player.money
         print(f"Final score: {final_score}")

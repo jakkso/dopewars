@@ -1,6 +1,7 @@
 """
 Contains Player definition
 """
+from random import choice, randint
 
 from dopewars.drugs import Drug, InventoryDrug
 
@@ -64,3 +65,27 @@ class Player:
         else:
             for key, value in self.inv.items():
                 print(f"{key}: {value.quantity}")
+
+    def steal_money(self) -> str:
+        """
+        When called, randomly removes 5-15% of money and decrements it from self._money
+        :return string describing what was removed
+        """
+        stolen = int(randint(5, 15) / 100 * self._money)
+        self._money -= stolen
+        return f'A thief stole {stolen} from you!'
+
+    def steal_drugs(self) -> str:
+        """
+        When called, randomly deletes some drugs from player's inventory
+        Randomly select a drug from inv, remove 25% of that drug
+        :return string describing what was removed
+        """
+        if not self.inv:
+            return 'Nothing to take!'
+        name, drug = choice(list(self.inv.items()))
+        quantity = int(drug.quantity / 4)
+        self.sell(name, quantity, price=0)
+        return f'{quantity} of {name} were confiscated!'
+
+

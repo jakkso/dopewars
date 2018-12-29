@@ -59,4 +59,29 @@ def test_player_selling_drug() -> None:
     assert p.inv.get('Soma') is None
 
 
+def test_player_steal_money() -> None:
+    """
+    Tests stealing from player
+    """
+    p = Player('Bob', 5000)
+    stolen = p.steal_money()
+    assert p.money < 5000
+    assert isinstance(stolen, str)
+
+
+def test_player_steal_drugs() -> None:
+    """
+    Tests stealing drug method.
+    :return:
+    """
+    p = Player('Bob', 5000)
+    nothing = p.steal_drugs()
+    assert nothing == 'Nothing to take!'
+    p.inv = {'Soma': InventoryDrug('Soma', 10)}
+    p.steal_drugs()
+    assert p.inv['Soma'].quantity < 10
+
+
+
+
 

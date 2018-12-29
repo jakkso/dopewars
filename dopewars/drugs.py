@@ -29,7 +29,7 @@ class InventoryDrug:
         :param sale_quant: amount to attempt to sell
         :return value of sale
         """
-        if sale_quant <= 0 or sale_price <= 0:
+        if sale_quant <= 0 or sale_price < 0:
             raise RuntimeError("Sale price and quantities must be greater than zero")
         if self.quantity < sale_quant:
             raise RuntimeError("Insufficient quantity")

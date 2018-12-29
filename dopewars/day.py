@@ -4,18 +4,23 @@ Contains implementation of a Day
 from dopewars.drugs import Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin, Drug
 from dopewars.player import Player
 
+from random import choice, randint
+
 
 class Day:
     """
-    Day represents a single turn of the game.  Player can make trades and (eventually)
+    Day represents a single turn of the game.  Player can make trades and
     will encounter random events
     """
 
     def __init__(self, city: str, player: Player) -> None:
         self.city = city
         self.player = player
+        self.end_game = False
         self._drugs: dict[str:Drug] = {}
+        self.event = None
         self._generate_drugs()
+        self._generate_event()
 
     def __str__(self):
         return f"City {self.city}"
@@ -69,3 +74,46 @@ class Day:
         :return price of drug, int
         """
         return self._drugs[drug].price
+
+    def _generate_event(self) -> None:
+        """
+        Randomly generates events
+        There are three types of events:
+            Robber
+             * Takes a little money / product from player
+             * 1/50 chance
+            Corrupt Cop
+             * Takes all product if player doesn't bribe them for max(500, 10% of money)
+             * 1/100 chance
+            Untouchable Cop
+             * Takes all product, end game
+             * If you have no product, you're free to go
+             * 1/500 chance
+        Can only have one type of event happen per turn, one is randomly chosen
+        """
+
+        def get_chance(number: int) -> bool:
+            """
+            Gets random number from 1-number, returns if the number chosen is 1
+            :param number:
+            """
+            return randint(1, number) == 1
+
+        event, value = choice(list({'robber': 5, 'bod_cop': 10, 'good_cop': 100}.items()))
+        chance = get_chance(value)
+        if not chance:
+            return
+        if event == 'robber':
+            self.event = self.player.steal_money()
+        elif event == 'bad_cop':
+            self.event = 'A corrupt cop stopped you!\n{self.player.steal_drugs()}'
+        else:
+            if self.player.inv:
+                self.end_game = True
+                self.event = 'The ultimate boy scout cop got you, game over!'
+
+
+
+
+
+

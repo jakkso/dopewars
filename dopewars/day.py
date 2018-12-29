@@ -1,9 +1,6 @@
 """
 Contains implementation of a Day
 """
-
-from random import shuffle
-
 from dopewars.drugs import Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin, Drug
 from dopewars.player import Player
 
@@ -27,9 +24,7 @@ class Day:
         """
         Generates random list of drugs available for purchase for this particular day
         """
-        drugs = [Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin]
-        shuffle(drugs)
-        for drug in drugs:
+        for drug in [Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin]:
             d = drug()
             self._drugs[d.name] = d
 

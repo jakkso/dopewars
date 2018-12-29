@@ -1,5 +1,5 @@
 """
-Entrypoint for game
+Entry point for game
 """
 
 from dopewars.gameplay import Gameplay

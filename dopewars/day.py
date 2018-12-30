@@ -1,10 +1,10 @@
 """
 Contains implementation of a Day
 """
+from random import choice, randint
+
 from dopewars.drugs import Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin, Drug
 from dopewars.player import Player
-
-from random import choice, randint
 
 
 class Day:
@@ -63,10 +63,13 @@ class Day:
         """
         Prints current offerings amounts and price
         """
-        print("Drug | Price | Quantity")
+        print("Drug | Price | Quantity | Max Amt")
         print("-" * 20)
         for index, (_, drug) in enumerate(self._drugs.items()):
-            print(f"{index + 1}) {drug.name} | ${drug.price} | {drug.quantity}")
+            max_amount = min((self.player.money // drug.price), drug.quantity)
+            print(
+                f"{index + 1}) {drug.name} | ${drug.price} | {drug.quantity} | {max_amount}"
+            )
 
     def get_price(self, drug: str) -> int:
         """

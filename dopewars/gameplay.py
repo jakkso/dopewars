@@ -129,7 +129,7 @@ class Gameplay:
         """
         Draws sell menu, handles player input
         """
-        if len(self.player.inv) == 0:
+        if not self.player.inv:
             input("You have nothing to sell.")
             return self.play_menu()
         choices = {}
@@ -242,7 +242,7 @@ def fmt_money(amount: int) -> str:
     if len(string) < 4:
         return f'${string}'
     chunks = []
-    indices = range(3, 100, 3)
+    indices = range(3, 100, 3)  # Every 4th character should be a comma
     for index, char in enumerate(reversed(string)):
         if index in indices:
             chunks.append(',')

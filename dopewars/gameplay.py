@@ -222,6 +222,7 @@ class Gameplay:
             day = Day(self.current_city, self.player)
             self.current_day = day
             if day.end_game:
+                input(day.event)
                 break
             self.play_menu()
         final_score = self.current_day.player.money

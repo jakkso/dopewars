@@ -63,13 +63,25 @@ class Day:
         """
         Prints current offerings amounts and price
         """
-        print("Drug | Price | Quantity | Max Amt")
-        print("-" * 20)
+        def spacer(str_len: int, amount: int) -> str:
+            """
+            Pads string length with spaces to create a uniformly spaced grid
+            :param str_len: int length of string
+            :param amount: int length up to which to pad
+            :return: spaces and a `|` at the end of the spacer
+            """
+            return ((amount - str_len) * ' ') + '|'
+        title_bar = "#) | Drug    | Price | Avail | Buy |"
+        print(title_bar)
+        print(len(title_bar) * '+')
         for index, (_, drug) in enumerate(self._drugs.items()):
             max_amount = min((self.player.money // drug.price), drug.quantity)
-            print(
-                f"{index + 1}) {drug.name} | ${drug.price} | {drug.quantity} | {max_amount}"
-            )
+            name = f'{index + 1}) | {drug.name}'
+            name = ''.join([name, spacer(len(name), 13)])
+            price = f'${drug.price}{spacer(len(str(drug.price)), 5)}'
+            avail = f'{drug.quantity}{spacer(len(str(drug.quantity)), 6)}'
+            max_amt = f'{max_amount} {spacer(len(str(max_amount)), 3)}'
+            print(f'{name} {price} {avail} {max_amt}')
 
     def get_price(self, drug: str) -> int:
         """

@@ -44,14 +44,31 @@ class Gameplay:
         os.system("cls" if os.name == "nt" else "clear")
         print("\n" * 100)
 
+    @staticmethod
+    def logo() -> None:
+        """
+        Prints this totally awesome ASCII Logo
+        """
+
+        print('''
+    ▓█████▄  ▒█████   ██▓███  ▓█████     █     █░ ▄▄▄       ██▀███    ██████ 
+    ▒██▀ ██▌▒██▒  ██▒▓██░  ██▒▓█   ▀    ▓█░ █ ░█░▒████▄    ▓██ ▒ ██▒▒██    ▒ 
+    ░██   █▌▒██░  ██▒▓██░ ██▓▒▒███      ▒█░ █ ░█ ▒██  ▀█▄  ▓██ ░▄█ ▒░ ▓██▄   
+    ░▓█▄   ▌▒██   ██░▒██▄█▓▒ ▒▒▓█  ▄    ░█░ █ ░█ ░██▄▄▄▄██ ▒██▀▀█▄    ▒   ██▒
+    ░▒████▓ ░ ████▓▒░▒██▒ ░  ░░▒████▒   ░░██▒██▓  ▓█   ▓██▒░██▓ ▒██▒▒██████▒▒
+     ▒▒▓  ▒ ░ ▒░▒░▒░ ▒▓▒░ ░  ░░░ ▒░ ░   ░ ▓░▒ ▒   ▒▒   ▓▒█░░ ▒▓ ░▒▓░▒ ▒▓▒ ▒ ░
+     ░ ▒  ▒   ░ ▒ ▒░ ░▒ ░      ░ ░  ░     ▒ ░ ░    ▒   ▒▒ ░  ░▒ ░ ▒░░ ░▒  ░ ░
+     ░ ░  ░ ░ ░ ░ ▒  ░░          ░        ░   ░    ░   ▒     ░░   ░ ░  ░  ░  
+       ░        ░ ░              ░  ░       ░          ░  ░   ░           ░  
+''')
+
     def draw_start_menu(self) -> None:
         """
         Draws start menu
         """
         self.clear()
-        print(
-            "Welcome to DopeWars, the subversive game you remember from your TI-83+\n"
-        )
+        self.logo()
+        print("Remember 10th grade math?  Neither do I, because of this game.\n")
         print("1) New Game")
         print("2) Quit")
 
@@ -82,20 +99,20 @@ class Gameplay:
             input(event)
             self.current_day.event = None
         self.clear()
-        print("=" * 20)
+        print("=" * 36)
         print(f"Day {self.current_day_num}")
         print(self.current_city)
-        print(f"${self.player.money}")
-        print("=" * 20)
+        print(fmt_money(self.player.money))
+        print("=" * 36)
         print("Inventory")
         self.player.print_inv()
-        print("=" * 20)
+        print("=" * 36)
         self.current_day.print_offerings()
-        print("=" * 20)
+        print("=" * 36)
         print("1) Buy")
         print("2) Sell")
         print("3) Move")
-        print("=" * 20)
+        print("=" * 36)
         valid = "1", "2", "3"
         while True:
             choice = input("What do you want to do: ")
@@ -147,10 +164,10 @@ class Gameplay:
         Draws buy menu, handles player input
         """
         self.clear()
-        print("=" * 20)
+        print("=" * 36)
         self.current_day.print_offerings()
-        print("=" * 20)
-        print(f"${self.player.money}")
+        print("=" * 36)
+        print(fmt_money(self.player.money))
         drugs = self.current_day.get_drugs()
         choices = {}
         for index, drug in enumerate(drugs):
@@ -183,7 +200,7 @@ class Gameplay:
         """
         available_cities = filter(lambda item: item != self.current_city, self.cities)
         self.clear()
-        print("=" * 20)
+        print("=" * 36)
         choices = {}
         for index, city in enumerate(available_cities):
             print(f"{index + 1}) {city}")
@@ -211,3 +228,28 @@ class Gameplay:
         print(f"Final score: {final_score}")
         input()
         return self.start_menu()
+
+
+def fmt_money(amount: int) -> str:
+    """
+    Formats amount into a more human readable amount.
+    To Americans, anyways
+    :param amount:
+    :return:
+    """
+    string = str(amount)
+    if len(string) < 4:
+        return f'${string}'
+    chunks = []
+    indices = range(3, 100, 3)
+    for index, char in enumerate(reversed(string)):
+        if index in indices:
+            chunks.append(',')
+            chunks.append(char)
+        else:
+            chunks.append(char)
+    return '$' + ''.join(chunks[::-1])
+
+
+
+

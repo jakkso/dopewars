@@ -71,7 +71,7 @@ class Day:
             :return: spaces and a `|` at the end of the spacer
             """
             return ((amount - str_len) * ' ') + '|'
-        title_bar = "#) | Drug    | Price | Avail | Buy |"
+        title_bar = "#) | Drug    | Price | Avail | Max |"
         print(title_bar)
         print(len(title_bar) * '+')
         for index, (_, drug) in enumerate(self._drugs.items()):

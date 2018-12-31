@@ -87,7 +87,7 @@ def test_player_setter() -> None:
     """
     Testing that the setter method works correctly
     """
-    p = Player('', 500)
+    p = Player("", 500)
     p.money += 100
     assert p.money == 600
 
@@ -96,7 +96,7 @@ def test_set_weapon() -> None:
     """
     :return:
     """
-    bob = Player('Bob', 5000)
+    bob = Player("Bob", 5000)
     gun = Gun()
     bob.weapon = gun
     assert bob.weapon == Gun()
@@ -106,4 +106,3 @@ def test_set_weapon() -> None:
     bob.money = 1_000_000
     bob.weapon = Blackmail()
     assert bob.weapon == Blackmail()
-

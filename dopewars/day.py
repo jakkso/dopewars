@@ -4,7 +4,18 @@ Contains implementation of a Day
 from random import choice, randint
 
 from dopewars.cities import City
-from dopewars.drugs import Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin, Drug
+from dopewars.drugs import (
+    Weed,
+    Luuds,
+    Coke,
+    Molly,
+    Shrooms,
+    Acid,
+    Meth,
+    Heroin,
+    Drug,
+    Olysio,
+)
 from dopewars.player import Player
 
 
@@ -31,7 +42,7 @@ class Day:
         """
         Generates random list of drugs available for purchase for this particular day
         """
-        for drug in [Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin]:
+        for drug in [Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin, Olysio]:
             d = drug()
             self._drugs[d.name] = d
 
@@ -75,7 +86,7 @@ class Day:
             """
             return ((amount - str_len) * " ") + "|"
 
-        title_bar = "#) | Drug    | Price | Avail | Max |"
+        title_bar = "#) | Item    | Price | Avail | Max |"
         print(title_bar)
         print(len(title_bar) * "+")
         for index, (_, drug) in enumerate(self._drugs.items()):
@@ -101,7 +112,7 @@ class Day:
             Robber
              * Takes a little money / product from player
             Corrupt Cop
-             * TODO Takes all product if player doesn't bribe them for max(500, 10% of money)
+             * Takes percentage of product if player doesn't have a Gun
             Untouchable Cop
              * Takes all product, end game
              * If you have no product, you're free to go
@@ -115,15 +126,19 @@ class Day:
             """
             return randint(1, number) == 1
 
-        event, value = choice(list({"robber": 3, "corrupt cop": 5, "good cop": 50}.items()))
+        event, value = choice(
+            list({"robber": 3, "corrupt cop": 5, "good cop": 50}.items())
+        )
         chance = get_chance(value)
         if not chance:
             return
         self.event = event
         if self.player.weapon:
             if self.player.weapon.defeat(event):
-                self.event_text = f'You were accosted by a {event}, but managed' \
-                                  f' to defend yourself using your {self.player.weapon}'
+                self.event_text = (
+                    f"You were accosted by a {event}, but managed"
+                    f" to defend yourself using your {self.player.weapon}"
+                )
                 self.player.weapon = None
                 return
         if event == "robber":

@@ -97,7 +97,7 @@ class Gameplay:
                 break
         if answer == "1":
             while True:
-                ans = input('How many turns: ')
+                ans = input("How many turns: ")
                 try:
                     ans = int(ans)
                     self.days = ans
@@ -136,7 +136,7 @@ class Gameplay:
             print("4) Move")
         elif self.current_city.store:
             valid = "1", "2", "3", "4"
-            print(f'3) Visit {self.current_city.store}')
+            print(f"3) Visit {self.current_city.store}")
             print("4) Move")
         else:
             valid = "1", "2", "3"
@@ -150,16 +150,18 @@ class Gameplay:
             self.buy_menu()
         elif choice == "2":
             self.sell_menu()
-        elif choice == "3" and not self.current_city.bank and not self.current_city.store:
+        elif (
+            choice == "3" and not self.current_city.bank and not self.current_city.store
+        ):
             self.move_menu()
         elif choice == "3" and self.current_city.bank and not self.current_city.store:
             self.bank_menu()
-        elif choice == '3' and self.current_city.store and not self.current_city.bank:
+        elif choice == "3" and self.current_city.store and not self.current_city.bank:
             self.store_menu()
-        elif choice == '4' and (self.current_city.bank or self.current_city.store):
+        elif choice == "4" and (self.current_city.bank or self.current_city.store):
             self.move_menu()
         else:
-            input(f'{choice} {self.current_city.store}')
+            input(f"{choice} {self.current_city.store}")
 
     def sell_menu(self) -> None:
         """
@@ -235,9 +237,9 @@ class Gameplay:
         Draws the bank interaction menu
         """
         self.clear()
-        print('=' * 36)
-        print(f'Welcome to {self.current_city.bank.name}')
-        print(f'Cash: {fmt_money(self.player.money)}')
+        print("=" * 36)
+        print(f"Welcome to {self.current_city.bank.name}")
+        print(f"Cash: {fmt_money(self.player.money)}")
         print(f"Bank balance: {fmt_money(self.current_city.bank.balance)}")
         choices = {"1": "Deposit", "2": "Withdraw", "3": "Go back"}
         for key, value in choices.items():
@@ -252,7 +254,7 @@ class Gameplay:
                 try:
                     amount = int(amount)
                     if amount > self.player.money:
-                        input('Insufficient Funds')
+                        input("Insufficient Funds")
                         return self.bank_menu()
                     msg = self.current_city.bank.deposit(amount)
                     input(msg)
@@ -282,19 +284,19 @@ class Gameplay:
         :return:
         """
         self.clear()
-        print('=' * 36)
-        print('Here are the offerings')
+        print("=" * 36)
+        print("Here are the offerings")
         choices = {}
         for index, weapon in enumerate(self.current_city.store.inventory):
             index += 1
             choices[str(index)] = weapon
-            print(f'{index}) | {weapon.name} | {weapon.price}')
-        choices['c'] = None
+            print(f"{index}) | {weapon.name} | {weapon.price}")
+        choices["c"] = None
         while True:
-            choice = input('What do you want to buy (c to cancel): ')
+            choice = input("What do you want to buy (c to cancel): ")
             if choice in choices:
                 break
-        if choice == 'c':
+        if choice == "c":
             return self.play_menu()
         try:
             weapon = choices[choice]
@@ -332,7 +334,7 @@ class Gameplay:
         for _, city in self.cities.items():
             if city.bank:
                 s += city.bank.balance
-        return f'Final score: {fmt_money(s)} '
+        return f"Final score: {fmt_money(s)} "
 
     def _calc_interest(self) -> None:
         """

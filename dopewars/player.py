@@ -55,7 +55,7 @@ class Player:
         elif not isinstance(weapon, Weapon):
             return
         elif self._money < weapon.price:
-            raise RuntimeError('Insufficient funds')
+            raise RuntimeError("Insufficient funds")
         self.money -= weapon.price
         self._weapon = weapon
 
@@ -97,8 +97,8 @@ class Player:
         Prints styled contents of inventory
         """
         if self.weapon:
-            print(f'Weapon: {self.weapon}')
-            print('-' * 36)
+            print(f"Weapon: {self.weapon}")
+            print("-" * 36)
         print("Inventory")
         if not self.inv:
             print("You have no product.")

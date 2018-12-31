@@ -166,3 +166,8 @@ class Meth(Drug):
 class Heroin(Drug):
     def __init__(self):
         super().__init__(name="Heroin", base_price=1000, jitter=500)
+
+
+class Olysio(Drug):
+    def __init__(self):
+        super(Olysio, self).__init__(name="Olysio", base_price=50000, jitter=20000)

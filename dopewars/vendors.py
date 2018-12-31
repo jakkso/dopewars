@@ -3,7 +3,7 @@ Contains vendors, like a store or a bank, for use
 with player interaction
 """
 
-from dopewars.gameplay import fmt_money
+from dopewars.utilities import fmt_money
 
 
 class Bank:

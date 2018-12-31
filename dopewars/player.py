@@ -23,6 +23,17 @@ class Player:
     def money(self):
         return self._money
 
+    @money.setter
+    def money(self, value: int) -> None:
+        """
+        Setter for Player._money
+        :param value:
+        :return:
+        """
+        if value < 0:
+            return
+        self._money = value
+
     def buy(self, drug: Drug, quantity: int) -> None:
         """
         :param quantity:

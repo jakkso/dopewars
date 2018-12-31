@@ -3,6 +3,7 @@ Contains implementation of a Day
 """
 from random import choice, randint
 
+from dopewars.cities import City
 from dopewars.drugs import Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin, Drug
 from dopewars.player import Player
 
@@ -13,7 +14,7 @@ class Day:
     will encounter random events
     """
 
-    def __init__(self, city: str, player: Player) -> None:
+    def __init__(self, city: City, player: Player) -> None:
         self.city = city
         self.player = player
         self.end_game = False
@@ -23,7 +24,7 @@ class Day:
         self._generate_event()
 
     def __str__(self):
-        return f"City {self.city}"
+        return f"City {self.city.name}"
 
     def _generate_drugs(self) -> None:
         """

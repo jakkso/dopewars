@@ -4,8 +4,19 @@ Contains gameplay implementation
 
 import os
 
+from dopewars.cities import (
+    City,
+    Miami,
+    NYC,
+    Atlanta,
+    Seattle,
+    Chicago,
+    LosAngeles,
+    Washington,
+)
 from dopewars.day import Day
 from dopewars.player import Player
+from dopewars.utilities import fmt_money
 
 
 class Gameplay:
@@ -18,16 +29,16 @@ class Gameplay:
     def __init__(self, days: int = 30) -> None:
         self.days = days
         self.player = None
-        self.cities = [
-            "Miami",
-            "NYC",
-            "Chicago",
-            "LA",
-            "Seattle",
-            "Washington D.C.",
-            "Atlanta",
-        ]
-        self.current_city = "Miami"  # You start in Miami
+        self.cities = {
+            "Miami": Miami(),
+            "NYC": NYC(),
+            "Atlanta": Atlanta(),
+            "Chicago": Chicago(),
+            "LA": LosAngeles(),
+            "Seattle": Seattle(),
+            "Washington D.C.": Washington(),
+        }
+        self.current_city: City = self.cities["Miami"]  # You start in Miami
         self.current_day_num: int = None
         self.current_day: Day = None
         self.score = None
@@ -103,7 +114,7 @@ class Gameplay:
         self.clear()
         print("=" * 36)
         print(f"Day {self.current_day_num}")
-        print(self.current_city)
+        print(self.current_city.name)
         print(fmt_money(self.player.money))
         print("=" * 36)
         print("Inventory")
@@ -113,9 +124,14 @@ class Gameplay:
         print("=" * 36)
         print("1) Buy")
         print("2) Sell")
-        print("3) Move")
+        if self.current_city.bank:
+            valid = "1", "2", "3", "4"
+            print("3) Visit Bank")
+            print("4) Move")
+        else:
+            valid = "1", "2", "3"
+            print("3) Move")
         print("=" * 36)
-        valid = "1", "2", "3"
         while True:
             choice = input("What do you want to do: ")
             if choice in valid:
@@ -124,7 +140,11 @@ class Gameplay:
             self.buy_menu()
         elif choice == "2":
             self.sell_menu()
-        elif choice == "3":
+        elif choice == "3" and not self.current_city.bank:
+            self.move_menu()
+        elif choice == "3" and self.current_city.bank:
+            self.bank_menu()
+        elif choice == '4' and self.current_city.bank:
             self.move_menu()
 
     def sell_menu(self) -> None:
@@ -136,9 +156,10 @@ class Gameplay:
             return self.play_menu()
         choices = {}
         for index, (key, value) in enumerate(self.player.inv.items()):
+            index += 1
             price = self.current_day.get_price(key)
-            print(f"{index +1}) {value.name} | ${price} | {value.quantity}")
-            choices[str(index + 1)] = value.name, price
+            print(f"{index}) {value.name} | ${price} | {value.quantity}")
+            choices[str(index)] = value.name, price
         choices["c"] = "cancel"
         while True:
             choice = input("Sell which (c to cancel): ")
@@ -195,30 +216,85 @@ class Gameplay:
                 print(str(e))
         return self.play_menu()
 
+    def bank_menu(self) -> None:
+        """
+        Draws the bank interaction menu
+        """
+        self.clear()
+        print('=' * 36)
+        print(f'Welcome to {self.current_city.bank.name}')
+        print(f"Current balance: {fmt_money(self.current_city.bank.balance)}")
+        choices = {"1": "Deposit", "2": "Withdraw", "3": "Go back"}
+        for key, value in choices.items():
+            print(f"{key}) {value}")
+        while True:
+            choice = input("What do you want to do: ")
+            if choice in choices:
+                break
+        if choice == "1":
+            while True:
+                amount = input("Amount to deposit: ")
+                try:
+                    amount = int(amount)
+                    msg = self.current_city.bank.deposit(amount)
+                    input(msg)
+                    self.player.money -= amount
+                    return self.bank_menu()
+                except ValueError:
+                    continue
+        elif choice == "2":
+            while True:
+                amount = input("How much to withdraw (c to cancel): ")
+                if amount == "c":
+                    return self.bank_menu()
+                try:
+                    amount = int(amount)
+                    withdraw = self.current_city.bank.withdraw(amount)
+                    print(f"Withdrew ${withdraw}")
+                    self.player.money += withdraw
+                    return self.bank_menu()
+                except ValueError:
+                    continue
+        elif choice == "3":
+            return self.play_menu()
+
     def move_menu(self) -> None:
         """
         Draws move menu, handles player input.
         This ends this day's turn
         """
-        available_cities = filter(lambda item: item != self.current_city, self.cities)
+        available_cities = [
+            city for name, city in self.cities.items() if self.current_city != city
+        ]
         self.clear()
         print("=" * 36)
         choices = {}
         for index, city in enumerate(available_cities):
-            print(f"{index + 1}) {city}")
-            choices[str(index + 1)] = city
+            index += 1
+            print(f"{index}) {city.name}")
+            choices[str(index)] = city
         while True:
             choice = input("Destination: ")
             if choice in choices:
                 break
         self.current_city = choices[choice]
 
+    def _final_score(self) -> str:
+        """
+        Sums up all the money deposited in the various banks
+        """
+        s = 0
+        for _, city in self.cities.items():
+            if city.bank:
+                s += city.bank.balance
+        return f'Final score: {fmt_money(s)} '
+
     def run(self) -> None:
         """
         Starts and runs the game.
         """
         self.clear()
-        self.player = Player(None, 500)
+        self.player = Player("", 500)
         for n in range(1, self.days + 1):
             self.current_day_num = n
             day = Day(self.current_city, self.player)
@@ -227,28 +303,6 @@ class Gameplay:
                 input(day.event)
                 break
             self.play_menu()
-        final_score = self.current_day.player.money
-        print(f"Final score: {final_score}")
+        print(self._final_score())
         input()
         return self.start_menu()
-
-
-def fmt_money(amount: int) -> str:
-    """
-    Formats amount into a more human readable amount.
-    To Americans, anyways
-    :param amount:
-    :return:
-    """
-    string = str(amount)
-    if len(string) < 4:
-        return f"${string}"
-    chunks = []
-    indices = range(3, 100, 3)  # Every 4th character should be a comma
-    for index, char in enumerate(reversed(string)):
-        if index in indices:
-            chunks.append(",")
-            chunks.append(char)
-        else:
-            chunks.append(char)
-    return "$" + "".join(chunks[::-1])

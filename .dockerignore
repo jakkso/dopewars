@@ -1,0 +1,4 @@
+scratch.*
+.pytest_cache
+.gitignore
+dopewars.sh

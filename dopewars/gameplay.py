@@ -117,7 +117,6 @@ class Gameplay:
         print(self.current_city.name)
         print(fmt_money(self.player.money))
         print("=" * 36)
-        print("Inventory")
         self.player.print_inv()
         print("=" * 36)
         self.current_day.print_offerings()
@@ -324,6 +323,15 @@ class Gameplay:
                 s += city.bank.balance
         return f'Final score: {fmt_money(s)} '
 
+    def _calc_interest(self) -> None:
+        """
+        Called on each iteration of the turn
+        :return:
+        """
+        for _, city in self.cities.items():
+            if city.bank:
+                city.bank.calc_interest()
+
     def run(self) -> None:
         """
         Starts and runs the game.
@@ -331,6 +339,7 @@ class Gameplay:
         self.clear()
         self.player = Player("", 500)
         for n in range(1, self.days + 1):
+            self._calc_interest()
             self.current_day_num = n
             day = Day(self.current_city, self.player)
             self.current_day = day

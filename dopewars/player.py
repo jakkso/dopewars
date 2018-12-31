@@ -49,7 +49,12 @@ class Player:
         Setter for Player._weapon
         :param weapon:
         """
-        if self._money < weapon.price:
+        if weapon is None:
+            self._weapon = None
+            return
+        elif not isinstance(weapon, Weapon):
+            return
+        elif self._money < weapon.price:
             raise RuntimeError('Insufficient funds')
         self.money -= weapon.price
         self._weapon = weapon
@@ -91,8 +96,12 @@ class Player:
         """
         Prints styled contents of inventory
         """
-        if len(self.inv) == 0:
-            print("You have nothing.")
+        if self.weapon:
+            print(f'Weapon: {self.weapon}')
+            print('-' * 36)
+        print("Inventory")
+        if not self.inv:
+            print("You have no product.")
         else:
             for key, value in self.inv.items():
                 print(f"{key}: {value.quantity}")

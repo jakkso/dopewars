@@ -3,7 +3,7 @@ Contains tests for vendors
 """
 
 
-from dopewars.vendors import *
+from dopewars.banks import *
 
 
 def test_deposit_withdraw() -> None:

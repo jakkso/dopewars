@@ -106,11 +106,11 @@ class Gameplay:
         and Gameplay.buy_menu in order for the player to go back and forth between
         the menus without ending that turn.
         """
-        event = self.current_day.event
+        event = self.current_day.event_text
         if event:
             self.clear()
             input(event)
-            self.current_day.event = None
+            self.current_day.event_text = None
         self.clear()
         print("=" * 36)
         print(f"Day {self.current_day_num}")
@@ -128,6 +128,10 @@ class Gameplay:
             valid = "1", "2", "3", "4"
             print("3) Visit Bank")
             print("4) Move")
+        elif self.current_city.store:
+            valid = "1", "2", "3", "4"
+            print(f'3) Visit {self.current_city.store}')
+            print("4) Move")
         else:
             valid = "1", "2", "3"
             print("3) Move")
@@ -140,12 +144,16 @@ class Gameplay:
             self.buy_menu()
         elif choice == "2":
             self.sell_menu()
-        elif choice == "3" and not self.current_city.bank:
+        elif choice == "3" and not self.current_city.bank and not self.current_city.store:
             self.move_menu()
-        elif choice == "3" and self.current_city.bank:
+        elif choice == "3" and self.current_city.bank and not self.current_city.store:
             self.bank_menu()
-        elif choice == '4' and self.current_city.bank:
+        elif choice == '3' and self.current_city.store and not self.current_city.bank:
+            self.store_menu()
+        elif choice == '4' and (self.current_city.bank or self.current_city.store):
             self.move_menu()
+        else:
+            input(f'{choice} {self.current_city.store}')
 
     def sell_menu(self) -> None:
         """
@@ -258,6 +266,33 @@ class Gameplay:
         elif choice == "3":
             return self.play_menu()
 
+    def store_menu(self) -> None:
+        """
+        Draws the store menu
+        :return:
+        """
+        self.clear()
+        print('=' * 36)
+        print('Here are the offerings')
+        choices = {}
+        for index, weapon in enumerate(self.current_city.store.inventory):
+            index += 1
+            choices[str(index)] = weapon
+            print(f'{index}) | {weapon.name} | {weapon.price}')
+        choices['c'] = None
+        while True:
+            choice = input('What do you want to buy (c to cancel): ')
+            if choice in choices:
+                break
+        if choice == 'c':
+            return self.play_menu()
+        try:
+            weapon = choices[choice]
+            self.player.weapon = weapon
+        except RuntimeError as e:
+            input(e)
+        return self.play_menu()
+
     def move_menu(self) -> None:
         """
         Draws move menu, handles player input.
@@ -300,7 +335,7 @@ class Gameplay:
             day = Day(self.current_city, self.player)
             self.current_day = day
             if day.end_game:
-                input(day.event)
+                input(day.event_text)
                 break
             self.play_menu()
         print(self._final_score())

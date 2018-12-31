@@ -4,6 +4,7 @@ Contains Player definition
 from random import choice, randint
 
 from dopewars.drugs import Drug, InventoryDrug
+from dopewars.weapons import Weapon
 
 
 class Player:
@@ -15,12 +16,13 @@ class Player:
         self.name = name
         self._money = money
         self.inv: dict[str:InventoryDrug] = {}
+        self._weapon: Weapon = None
 
     def __str__(self):
         return f"{self.name}: {self.money}"
 
     @property
-    def money(self):
+    def money(self) -> int:
         return self._money
 
     @money.setter
@@ -34,7 +36,25 @@ class Player:
             return
         self._money = value
 
-    def buy(self, drug: Drug, quantity: int) -> None:
+    @property
+    def weapon(self) -> Weapon:
+        """
+        Getter for Player._weapon
+        """
+        return self._weapon
+
+    @weapon.setter
+    def weapon(self, weapon: Weapon) -> None:
+        """
+        Setter for Player._weapon
+        :param weapon:
+        """
+        if self._money < weapon.price:
+            raise RuntimeError('Insufficient funds')
+        self.money -= weapon.price
+        self._weapon = weapon
+
+    def buy_drugs(self, drug: Drug, quantity: int) -> None:
         """
         :param quantity:
         :param drug:

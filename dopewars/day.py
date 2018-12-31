@@ -16,10 +16,11 @@ class Day:
 
     def __init__(self, city: City, player: Player) -> None:
         self.city = city
-        self.player = player
-        self.end_game = False
+        self.player: Player = player
+        self.end_game: bool = False
         self._drugs: dict[str:Drug] = {}
-        self.event = None
+        self.event_text: str = None
+        self.event_name: str = None
         self._generate_drugs()
         self._generate_event()
 
@@ -43,7 +44,7 @@ class Day:
         """
         if self._drugs.get(drug) is None:
             return
-        self.player.buy(self._drugs[drug], quantity)
+        self.player.buy_drugs(self._drugs[drug], quantity)
 
     def sell(self, drug: str, quantity: int) -> None:
         """
@@ -114,15 +115,22 @@ class Day:
             """
             return randint(1, number) == 1
 
-        event, value = choice(list({"robber": 3, "bod_cop": 5, "good_cop": 50}.items()))
+        event, value = choice(list({"robber": 3, "corrupt cop": 5, "good cop": 50}.items()))
         chance = get_chance(value)
         if not chance:
             return
+        self.event = event
+        if self.player.weapon:
+            if self.player.weapon.defeat(event):
+                self.event_text = f'You were accosted by a {event}, but managed' \
+                                  f' to defend yourself using your {self.player.weapon}'
+                self.player.weapon = None
+                return
         if event == "robber":
-            self.event = self.player.steal_money()
-        elif event == "bad_cop":
-            self.event = "A corrupt cop stopped you!\n{self.player.steal_drugs()}"
+            self.event_text = self.player.steal_money()
+        elif event == "corrupt cop":
+            self.event_text = f"A corrupt cop stopped you!\n{self.player.steal_drugs()}"
         else:
             if self.player.inv:
                 self.end_game = True
-                self.event = "The ultimate boy scout cop got you, game over!"
+                self.event_text = "The ultimate boy scout cop got you, game over!"

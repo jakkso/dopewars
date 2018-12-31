@@ -7,6 +7,7 @@ from dopewars.day import Day
 from dopewars.drugs import Drug, InventoryDrug
 from dopewars.player import Player
 from dopewars.drugs import Weed
+from dopewars.weapons import Blackmail, Knife, Gun
 
 
 def test_day_init() -> None:
@@ -68,6 +69,13 @@ def test_day_event_freq() -> None:
     events = []
     for _ in range(500):
         d = Day("test", p)
-        if d.event:
+        if d.event_text:
             events.append(1)
     assert len(events) > 10
+
+
+def test_weaponry_usage() -> None:
+    """
+    Tests
+    :return:
+    """

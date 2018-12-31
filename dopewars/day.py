@@ -98,14 +98,11 @@ class Day:
         There are three types of events:
             Robber
              * Takes a little money / product from player
-             * 1/5 chance
             Corrupt Cop
-             * Takes all product if player doesn't bribe them for max(500, 10% of money)
-             * 1/10 chance
+             * TODO Takes all product if player doesn't bribe them for max(500, 10% of money)
             Untouchable Cop
              * Takes all product, end game
              * If you have no product, you're free to go
-             * 1/100 chance
         Can only have one type of event happen per turn, one is randomly chosen
         """
 

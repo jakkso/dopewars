@@ -13,7 +13,8 @@ def test_day_init() -> None:
     """
     Tests that day initializes properly
     """
-    nyc = Day("NYC", None)
+    p = Player("bob", 5000)
+    nyc = Day("NYC", p)
     assert len(nyc._drugs) == 8
     for _, drug in nyc._drugs.items():
         assert isinstance(drug, Drug)
@@ -50,6 +51,9 @@ def test_day_sell() -> None:
     bob = Player("Bob", 500)
     bob.inv["Weed"] = InventoryDrug("Weed", 1)
     day = Day("Miami", bob)
+    day.player = (
+        bob
+    )  # Events happen randomly, this prevents an event from unexpectedly lowering the player's money
     day.sell("Weed", 1)
     assert day.player.money > 500
     assert day.player.inv == {}

@@ -96,7 +96,14 @@ class Gameplay:
             if answer in valid_answers:
                 break
         if answer == "1":
-            self.run()
+            while True:
+                ans = input('How many turns: ')
+                try:
+                    ans = int(ans)
+                    self.days = ans
+                    self.run()
+                except ValueError:
+                    continue
         elif answer == "2":
             quit(0)
 
@@ -230,7 +237,8 @@ class Gameplay:
         self.clear()
         print('=' * 36)
         print(f'Welcome to {self.current_city.bank.name}')
-        print(f"Current balance: {fmt_money(self.current_city.bank.balance)}")
+        print(f'Cash: {fmt_money(self.player.money)}')
+        print(f"Bank balance: {fmt_money(self.current_city.bank.balance)}")
         choices = {"1": "Deposit", "2": "Withdraw", "3": "Go back"}
         for key, value in choices.items():
             print(f"{key}) {value}")
@@ -243,6 +251,9 @@ class Gameplay:
                 amount = input("Amount to deposit: ")
                 try:
                     amount = int(amount)
+                    if amount > self.player.money:
+                        input('Insufficient Funds')
+                        return self.bank_menu()
                     msg = self.current_city.bank.deposit(amount)
                     input(msg)
                     self.player.money -= amount

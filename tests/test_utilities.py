@@ -1,7 +1,7 @@
 """
 Gameplay tests
 """
-from dopewars.gameplay import fmt_money
+from dopewars.utilities import fmt_money
 
 
 def test_format_money() -> None:

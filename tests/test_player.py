@@ -81,6 +81,9 @@ def test_player_steal_drugs() -> None:
     p.inv = {"Soma": InventoryDrug("Soma", 10)}
     p.steal_drugs()
     assert p.inv["Soma"].quantity < 10
+    p.inv = {"Soma": InventoryDrug("Soma", 3)}
+    msg = p.steal_drugs()
+    assert msg == f"1 of Soma were confiscated!"
 
 
 def test_player_setter() -> None:

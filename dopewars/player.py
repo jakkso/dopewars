@@ -124,6 +124,6 @@ class Player:
         if not self.inv:
             return "Nothing to take!"
         name, drug = choice(list(self.inv.items()))
-        quantity = int(drug.quantity / 4)
+        quantity = max(1, int(drug.quantity / 4))
         self.sell(name, quantity, price=0)
         return f"{quantity} of {name} were confiscated!"

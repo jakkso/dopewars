@@ -4,6 +4,8 @@ Holds Scores class
 import csv
 from typing import List, Tuple
 
+from dopewars.utilities import fmt_money
+
 
 class Scores:
     """
@@ -68,7 +70,7 @@ class Scores:
             print("High scores")
             for item in self.list:
                 score, name = item
-                print(f"{name}: ${score}")
+                print(f"{name}: ${fmt_money(score)}")
             print("=" * 36)
         else:
             print("No high scores!")

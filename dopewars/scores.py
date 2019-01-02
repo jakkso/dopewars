@@ -70,7 +70,7 @@ class Scores:
             print("High scores")
             for item in self.list:
                 score, name = item
-                print(f"{name}: ${fmt_money(score)}")
+                print(f"{name}: {fmt_money(score)}")
             print("=" * 36)
         else:
             print("No high scores!")

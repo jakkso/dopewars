@@ -112,6 +112,8 @@ class Player:
         :return string describing what was removed
         """
         stolen = int(randint(5, 15) / 100 * self._money)
+        if stolen == 0:
+            return 'A thief tried to steal from you, but you are flat broke!'
         self._money -= stolen
         return f"A thief stole {stolen} from you!"
 

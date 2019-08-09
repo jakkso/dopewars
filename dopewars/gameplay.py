@@ -1,33 +1,25 @@
-"""
-Contains gameplay implementation
-"""
+"""Contains gameplay implementation."""
 import os
 from string import ascii_letters as alpha
 
-from dopewars.cities import (
-    City,
-    Miami,
-    NYC,
-    Atlanta,
-    Seattle,
-    Chicago,
-    LosAngeles,
-    Washington,
-)
+from dopewars.cities import City
 from dopewars.day import Day
 from dopewars.player import Player
 from dopewars.scores import Scores
 from dopewars.utilities import fmt_money
 
+STARTING_MONEY = 500
+
 
 class Gameplay:
-    """
+    """Contain gameplay implementation.
+
     Instantiates all the other objects required to play the game:
     draws menus; accepts and validates user input; transforms user
     input into data manipulation
     """
 
-    menu_width = 36
+    menu_width = 40
 
     def __init__(self, days: int = 30) -> None:
         self.days = days
@@ -42,36 +34,33 @@ class Gameplay:
         self.start_menu()
 
     def __str__(self) -> str:
-        return f"Gameplay {self.current_day} in {self.current_city}"
+        return f"<Gameplay {self.current_day} in {self.current_city}>"
 
     def _generate_cities(self) -> None:
-        """
-        :return:
+        """Generate cities.
+
+        Called by Gameplay.run
         """
         self.cities = {
-            "Miami": Miami(),
-            "NYC": NYC(),
-            "Atlanta": Atlanta(),
-            "Chicago": Chicago(),
-            "LA": LosAngeles(),
-            "Seattle": Seattle(),
-            "Washington D.C.": Washington(),
+            "Miami": City.miami(),
+            "NYC": City.nyc(),
+            "Atlanta": City.atlanta(),
+            "Chicago": City.chicago(),
+            "LA": City.los_angeles(),
+            "Seattle": City.seattle(),
+            "Washington D.C.": City.washington(),
         }
         self.current_city = self.cities["Miami"]
 
     @staticmethod
     def clear() -> None:
-        """
-        Clears the screen.
-        """
+        """Clear the screen."""
         os.system("cls" if os.name == "nt" else "clear")
         print("\n" * 100)
 
     @staticmethod
     def logo() -> None:
-        """
-        Prints this totally awesome ASCII Logo
-        """
+        """Print this totally awesome ASCII Logo."""
 
         print(
             """
@@ -88,33 +77,26 @@ class Gameplay:
         )
 
     def main_menu(self) -> None:
-        """
-        Draws start menu
-        """
+        """Draw main menu."""
         self.clear()
         self.logo()
         print("Remember 10th grade math?  Neither do I, because of this game.\n")
         print("1) New Game")
-        print("2) Quit")
+        print("2) Display High Scores")
+        print("3) Quit")
 
     def start_menu(self) -> None:
-        """
-        Handles user interaction to start game or quit
-        """
+        """Handle user interaction for main menu."""
 
-        def check_alpha(name: str) -> bool:
-            """
-            Checks that only ascii letters are in name
-            :param name:
-            :return:
-            """
+        def check_alpha() -> bool:
+            """Ensure that only ascii letters are in name."""
             for char in name:
                 if char not in alpha:
                     return False
             return True
 
         self.main_menu()
-        valid_answers = ("1", "2")
+        valid_answers = ("1", "2", "3")
         while True:
             answer = input("What would you like to do: ")
             if answer in valid_answers:
@@ -126,7 +108,7 @@ class Gameplay:
                     self.days = int(ans)
                     while True:
                         name = input("Name: ")
-                        if not check_alpha(name):
+                        if not check_alpha():
                             print("Letters only please")
                             continue
                         else:
@@ -136,11 +118,18 @@ class Gameplay:
                 except ValueError:
                     continue
         elif answer == "2":
+            self.clear()
+            s = Scores()
+            s.print()
+            input()
+            self.start_menu()
+        elif answer == "3":
             quit(0)
 
     def play_menu(self) -> None:
-        """
-        Draws the play menu.  This can be repeatedly called by Gameplay.sell_menu
+        """Draw the play menu.
+
+        This can be repeatedly called by Gameplay.sell_menu
         and Gameplay.buy_menu in order for the player to go back and forth between
         the menus without ending that turn.
         """
@@ -163,7 +152,7 @@ class Gameplay:
         print("2) Sell")
         if self.current_city.bank:
             valid = "1", "2", "3", "4"
-            print("3) Visit Bank")
+            print(f"3) Visit {self.current_city.bank} Bank")
             print("4) Move")
         elif self.current_city.store:
             valid = "1", "2", "3", "4"
@@ -195,9 +184,7 @@ class Gameplay:
             input(f"{choice} {self.current_city.store}")
 
     def sell_menu(self) -> None:
-        """
-        Draws sell menu, handles player input
-        """
+        """Draw sell menu, handle player input."""
         if not self.player.inv:
             input("You have nothing to sell.")
             return self.play_menu()
@@ -230,9 +217,7 @@ class Gameplay:
         return self.play_menu()
 
     def buy_menu(self) -> None:
-        """
-        Draws buy menu, handles player input
-        """
+        """Draw buy menu, handle player input."""
         self.clear()
         print("=" * Gameplay.menu_width)
         self.current_day.print_offerings()
@@ -264,9 +249,7 @@ class Gameplay:
         return self.play_menu()
 
     def bank_menu(self) -> None:
-        """
-        Draws the bank interaction menu
-        """
+        """Draw the bank interaction menu."""
         self.clear()
         print("=" * Gameplay.menu_width)
         print(f"Welcome to {self.current_city.bank.name}")
@@ -289,7 +272,8 @@ class Gameplay:
                         return self.bank_menu()
                     msg = self.current_city.bank.deposit(amount)
                     input(msg)
-                    self.player.money -= amount
+                    if 'Balance' in msg:
+                        self.player.money -= amount
                     return self.bank_menu()
                 except ValueError:
                     continue
@@ -310,10 +294,7 @@ class Gameplay:
             return self.play_menu()
 
     def store_menu(self) -> None:
-        """
-        Draws the store menu
-        :return:
-        """
+        """Draw the store menu."""
         self.clear()
         print("=" * Gameplay.menu_width)
         print("Here are the offerings")
@@ -337,9 +318,9 @@ class Gameplay:
         return self.play_menu()
 
     def move_menu(self) -> None:
-        """
-        Draws move menu, handles player input.
-        This ends this day's turn
+        """Draw move menu, handle player input.
+
+        This ends this day's turn.
         """
         available_cities = [
             city for name, city in self.cities.items() if self.current_city != city
@@ -358,44 +339,35 @@ class Gameplay:
         self.current_city = choices[choice]
 
     def _final_score(self) -> int:
-        """
-        Sums up all the money deposited in the various banks
-        """
-        s = 0
+        """Return amount of money owned by player."""
+        s = self.player.money
         for _, city in self.cities.items():
             if city.bank:
                 s += city.bank.balance
         return s
 
     def _calc_interest(self) -> None:
-        """
-        Called on each iteration of the turn
-        :return:
-        """
+        """Calculate interest for all banks."""
         for _, city in self.cities.items():
             if city.bank:
                 city.bank.calc_interest()
 
     def _print_scores(self) -> None:
-        """
-        Prints score from current game, as well as high scores
-        """
+        """Print score from current game, as well as high scores."""
         self.clear()
         score = self._final_score()
         score_text = f"Final score: {fmt_money(score)}"
         print(score_text)
         s = Scores()
-        s.add((score, self.player.name))
+        s.add((score, self.player.name, self.days))
         s.save()
         s.print()
         input()
 
     def run(self) -> None:
-        """
-        Starts and runs the game.
-        """
+        """Start and run game."""
         self.clear()
-        self.player = Player(self.name, 500)
+        self.player = Player(self.name, STARTING_MONEY)
         self._generate_cities()
         for n in range(1, self.days + 1):
             self._calc_interest()

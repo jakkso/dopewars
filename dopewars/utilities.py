@@ -1,14 +1,11 @@
-"""
-Contain utility functions used by multiple classes
-"""
+"""Contain utility functions."""
 
 
 def fmt_money(amount: int) -> str:
-    """
-    Formats amount into a more human readable amount.
-    To Americans, anyways
-    :param amount:
-    :return:
+    """Format amount into a more human readable amount (To Americans, anyways).
+
+    :param amount: int
+    :return: string-ified representation.
     """
     string = str(amount)
     if len(string) < 4:

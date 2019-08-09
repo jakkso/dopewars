@@ -70,7 +70,7 @@ def test_player_steal_money() -> None:
     assert isinstance(stolen, str)
     p.money = 0
     stolen = p.steal_money()
-    assert stolen == 'A thief tried to steal from you, but you are flat broke!'
+    assert stolen == "A thief tried to steal from you, but you are flat broke!"
 
 
 def test_player_steal_drugs() -> None:

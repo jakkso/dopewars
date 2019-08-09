@@ -1,94 +1,52 @@
 """
 Contains city implementations
 """
-from dopewars.banks import Bank, BoA, GoldmanSacks, LehmanSis, TexasMidland
+from dopewars.banks import Bank, BoAConstrictor, GoldmanSacks, LehmanSis, TexasMidland
 from dopewars.weapons import CIA, Store, Walmart
 
 
 class City:
-    """
-    Parent for all cities.
-    Holds name
+    """Parent for all cities.
+
+    Holds name, as well as vendors.
     """
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, **kwargs) -> None:
         """
 
         :param name: city name, string
         """
         self.name = name
-        self.bank: Bank = None
-        self.store: Store = None
+        self.bank: Bank = kwargs.get("bank", None)
+        self.store: Store = kwargs.get("store", None)
 
     def __str__(self):
-        return f"{self.__class__.__name__}"
+        return f"{self.__class__.__name__} {self.name}"
 
+    @classmethod
+    def miami(cls):
+        return cls("Miami", bank=BoAConstrictor())
 
-class Miami(City):
-    """
-    Holds BoA Constrictor bank
-    """
+    @classmethod
+    def nyc(cls):
+        return cls("NYC", bank=GoldmanSacks())
 
-    def __init__(self):
-        super().__init__("Miami")
-        self.bank = BoA()
+    @classmethod
+    def atlanta(cls):
+        return cls("Atlanta", bank=TexasMidland())
 
+    @classmethod
+    def chicago(cls):
+        return cls("Chicago", bank=LehmanSis())
 
-class NYC(City):
-    """
-    Holds Goldman Sacks
-    """
+    @classmethod
+    def los_angeles(cls):
+        return cls("LA", store=Walmart())
 
-    def __init__(self):
-        super().__init__("NYC")
-        self.bank = GoldmanSacks()
+    @classmethod
+    def seattle(cls):
+        return cls("Seattle", store=Walmart())
 
-
-class Atlanta(City):
-    """
-    Holds Texas Midlands Bank
-    """
-
-    def __init__(self):
-        super().__init__("Atlanta")
-        self.bank = TexasMidland()
-
-
-class Chicago(City):
-    """
-    Holds Lehman's Sis
-    """
-
-    def __init__(self):
-        super().__init__("Chicago")
-        self.bank = LehmanSis()
-
-
-class LosAngeles(City):
-    """
-    Buy a knife or a gun in L.A.!
-    """
-
-    def __init__(self):
-        super().__init__("LA")
-        self.store = Walmart()
-
-
-class Seattle(City):
-    """
-    Hey seattle hipsters, buy a glock at walmart!
-    """
-
-    def __init__(self):
-        super().__init__("Seattle")
-        self.store = Walmart()
-
-
-class Washington(City):
-    """
-    Visit the CIA!  Blackmail anyone!
-    """
-
-    def __init__(self):
-        super().__init__("Washington D.C.")
-        self.store = CIA()
+    @classmethod
+    def washington(cls):
+        return cls("Washington, D.C.", store=CIA())

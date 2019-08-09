@@ -1,13 +1,9 @@
-"""
-Contains stores
-"""
+"""Contains stores."""
 from typing import List
 
 
 class Store:
-    """
-    Buy stuff from stores!
-    """
+    """Create place from which to buy items."""
 
     def __init__(self) -> None:
         self.inventory: List[Weapon] = None
@@ -29,9 +25,9 @@ class CIA(Store):
 
 
 class Weapon:
-    """
-    Weapons protect against loss of money and drugs.
-    When they protect the player, they are lost
+    """Protect against loss of money and drugs.
+
+    When they protect the player, they are lost.
     """
 
     def __init__(self, name: str, price: int):
@@ -53,7 +49,7 @@ class Weapon:
 
     @staticmethod
     def defeat(opponent: str) -> bool:
-        """
+        """Overload this method to implement functionality.
 
         :param opponent:
         :return:
@@ -62,9 +58,7 @@ class Weapon:
 
 
 class Knife(Weapon):
-    """
-    Prevents thieves from stealing money
-    """
+    """Prevent thieves from stealing money."""
 
     def __init__(self):
         super(Knife, self).__init__("Knife", 20)
@@ -79,9 +73,7 @@ class Knife(Weapon):
 
 
 class Gun(Weapon):
-    """
-    Prevents Corrupt cops from taking drugs and thieves from taking money
-    """
+    """Prevent Corrupt cops from taking drugs and thieves from taking money."""
 
     def __init__(self):
         super(Gun, self).__init__("Glock", 500)
@@ -96,9 +88,7 @@ class Gun(Weapon):
 
 
 class Blackmail(Weapon):
-    """
-    Prevents Good Cops from causing the player to instantly lose
-    """
+    """Prevent Good Cops from causing the player to instantly lose."""
 
     def __init__(self):
         super(Blackmail, self).__init__("Blackmail", 100_000)

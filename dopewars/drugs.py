@@ -1,12 +1,12 @@
-"""
-Contains Drug
-"""
+"""Contain drug implementation."""
 from random import randint
+
+from dopewars.utilities import fmt_money
 
 
 class InventoryDrug:
-    """
-    This class defines how a drug held in a player's inventory behaves.
+    """Define how drug in inventory behaves.
+
     Holds quantity, contains method to manage selling it
     """
 
@@ -22,7 +22,8 @@ class InventoryDrug:
         return f"{self.name}: {self.quantity}"
 
     def sell(self, sale_quant, sale_price: int) -> int:
-        """
+        """Handle selling a drug.
+
         Reduces InventoryDrug._quantity by sale_quant, if it is larger than
         sale_quant, returns the amount made by the sale, returns value of sale
         :param sale_price: int > 0
@@ -37,8 +38,8 @@ class InventoryDrug:
         return sale_quant * sale_price
 
     def __add__(self, other):
-        """
-        Defines how to add two InventoryDrug classes together
+        """Define how to add two InventoryDrug classes together.
+
         :param other:
         :return:
         """
@@ -54,8 +55,8 @@ class InventoryDrug:
 
 
 class Drug:
-    """
-    Defines how drug's price and quantities are generated.
+    """Define how drug's price and quantities are generated.
+
     This class is used for buying only.
     """
 
@@ -70,7 +71,7 @@ class Drug:
             If set to lo, the base price is modified to be 1/3 - 2/3 as much
         """
         if base_price <= 0 or jitter <= 0:
-            raise RuntimeError("Price and jitter must be larger than 0")
+            raise ValueError("Price and jitter must be larger than 0")
         self._base_price = base_price
         self.name = name
         self._jitter = jitter
@@ -84,10 +85,24 @@ class Drug:
     def __str__(self):
         return f"{self.name} price: {self.price}"
 
+    @property
+    def formatted_price(self) -> str:
+        """Return comma formatted drug price."""
+        return fmt_money(self.price)
+
+    def _calc_surge(self) -> None:
+        """Determine whether or not there will be a price surge.
+
+        set's Drug._surge equal to either `lo` or `hi` if there will be one.
+        """
+        chance = randint(1, 100)
+        if 80 < chance <= 100:
+            self._surge = "hi"
+        elif 60 < chance <= 80:
+            self._surge = "lo"
+
     def _calc_price(self) -> None:
-        """
-        Calculates price for a particular instantiation
-        """
+        """Calculate drug price."""
         if self._surge == "hi":
             # 1.5-3x as much
             base = self._base_price * randint(15, 30) / 10
@@ -103,8 +118,8 @@ class Drug:
         )  # Set a price floor as 15% of base
 
     def _calc_quantity(self) -> None:
-        """
-        Calculates amount of drug available for purchase.
+        """Calculate amount of drug available for purchase.
+
         If there is a hi surge, less is available, vice versa for a lo surge
         """
         base_quant = randint(5, 100)
@@ -115,17 +130,6 @@ class Drug:
         else:
             rv = base_quant
         self.quantity = rv
-
-    def _calc_surge(self) -> None:
-        """
-        Calculates whether or not there will be a price surge,
-        set's Drug._surge equal to either `lo` or `hi` if there will be
-        """
-        chance = randint(1, 100)
-        if 80 < chance <= 100:
-            self._surge = "hi"
-        elif 60 < chance <= 80:
-            self._surge = "lo"
 
 
 class Weed(Drug):
@@ -160,7 +164,7 @@ class Acid(Drug):
 
 class Meth(Drug):
     def __init__(self):
-        super().__init__(name="Meth", base_price=800, jitter=90)
+        super().__init__(name="Meth", base_price=10, jitter=15)
 
 
 class Heroin(Drug):
@@ -168,6 +172,25 @@ class Heroin(Drug):
         super().__init__(name="Heroin", base_price=1000, jitter=500)
 
 
+class DeathSticks(Drug):
+    def __init__(self):
+        super().__init__(name="DeathStix", base_price=50, jitter=100)
+
+
 class Olysio(Drug):
     def __init__(self):
         super(Olysio, self).__init__(name="Olysio", base_price=50000, jitter=20000)
+
+
+DRUGS = [
+    Weed,
+    Luuds,
+    Coke,
+    Molly,
+    Shrooms,
+    Acid,
+    Meth,
+    Heroin,
+    DeathSticks,
+    Olysio
+]

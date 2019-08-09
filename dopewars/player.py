@@ -38,15 +38,13 @@ class Player:
 
     @property
     def weapon(self) -> Weapon:
-        """
-        Getter for Player._weapon
-        """
+        """Getter for Player._weapon."""
         return self._weapon
 
     @weapon.setter
     def weapon(self, weapon: Weapon) -> None:
-        """
-        Setter for Player._weapon
+        """Setter for Player._weapon.
+
         :param weapon:
         """
         if weapon is None:
@@ -60,7 +58,8 @@ class Player:
         self._weapon = weapon
 
     def buy_drugs(self, drug: Drug, quantity: int) -> None:
-        """
+        """Implement drug buying interface.
+
         :param quantity:
         :param drug:
         :return:
@@ -79,8 +78,8 @@ class Player:
         self._money -= price
 
     def sell(self, drug_name: str, quantity: int, price: int) -> None:
-        """
-        Implements sale logic
+        """Implement drug sale interface.
+
         :param drug_name:
         :param quantity:
         :param price:
@@ -93,9 +92,7 @@ class Player:
             del self.inv[drug_name]
 
     def print_inv(self) -> None:
-        """
-        Prints styled contents of inventory
-        """
+        """Print styled contents of inventory."""
         if self.weapon:
             print(f"Weapon: {self.weapon}")
             print("-" * 36)
@@ -107,18 +104,20 @@ class Player:
                 print(f"{key}: {value.quantity}")
 
     def steal_money(self) -> str:
+        """Steal money from player.
+
+        When called, randomly removes 5-15% of money
+        :return string describing what was removed.
         """
-        When called, randomly removes 5-15% of money and decrements it from self._money
-        :return string describing what was removed
-        """
-        stolen = int(randint(5, 15) / 100 * self._money)
-        if stolen == 0:
-            return 'A thief tried to steal from you, but you are flat broke!'
-        self._money -= stolen
-        return f"A thief stole {stolen} from you!"
+        amount = int(randint(5, 15) / 100 * self._money)
+        if amount == 0:
+            return "A thief tried to steal from you, but you are flat broke!"
+        self._money -= amount
+        return f"A thief stole {amount} from you!"
 
     def steal_drugs(self) -> str:
-        """
+        """Steal drugs from player.
+
         When called, randomly deletes some drugs from player's inventory
         Randomly select a drug from inv, remove 25% of that drug
         :return string describing what was removed

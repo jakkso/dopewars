@@ -1,17 +1,12 @@
-"""
-Contains vendors, like a store or a bank, for use
-with player interaction
-"""
+"""Contain bank implementation."""
 
 from dopewars.utilities import fmt_money
 
 
 class Bank:
-    """
-    Holds player's money, which is the determinate
-    of the final score.
-    Calculates interest.
-    Banks can have minimum deposits, with which come higher interest rates
+    """Hold player's money, calculate interest on deposits.
+
+    Banks can have minimum deposits, with which come higher interest rates.
     """
 
     def __init__(
@@ -23,9 +18,12 @@ class Bank:
         self._min_deposit = min_deposit
         self._initial_deposit = True
 
+    def __str__(self):
+        return f"{self.__class__.__name__}"
+
     def deposit(self, amount: int) -> str:
-        """
-        Increments Bank.balance by amount
+        """Increment Bank.balance by `amount`.
+
         :param amount: int
         """
         if self._initial_deposit:
@@ -38,8 +36,8 @@ class Bank:
         return f"Balance: {fmt_money(self.balance)}"
 
     def withdraw(self, amount: int) -> int:
-        """
-        Decrements Bank.balance by amount
+        """Decrement Bank.balance by `amount`.
+
         :param amount: int
         :return: int returns amount withdrawn
         """
@@ -50,15 +48,11 @@ class Bank:
 
     @property
     def balance(self) -> int:
-        """
-        Returns balance
-        """
+        """Return balance."""
         return self._balance
 
     def calc_interest(self) -> None:
-        """
-        Calculates compounded interest
-        """
+        """Calculate compounded interest."""
         self._balance += int(self._balance * self._interest_rate)
 
 
@@ -72,7 +66,7 @@ class TexasMidland(Bank):
         super().__init__(name="Texas Midland Bank", interest_rate=0.01)
 
 
-class BoA(Bank):
+class BoAConstrictor(Bank):
     """
     50,000 min deposit
     4% Interest

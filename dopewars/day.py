@@ -4,25 +4,14 @@ Contains implementation of a Day
 from random import choice, randint
 
 from dopewars.cities import City
-from dopewars.drugs import (
-    Weed,
-    Luuds,
-    Coke,
-    Molly,
-    Shrooms,
-    Acid,
-    Meth,
-    Heroin,
-    Drug,
-    Olysio,
-)
+from dopewars.drugs import Drug, DRUGS
 from dopewars.player import Player
 
 
 class Day:
-    """
-    Day represents a single turn of the game.  Player can make trades and
-    will encounter random events
+    """Represent a single turn of the game.
+
+    Player can make trades and will encounter random events.
     """
 
     def __init__(self, city: City, player: Player) -> None:
@@ -39,16 +28,14 @@ class Day:
         return f"City {self.city.name}"
 
     def _generate_drugs(self) -> None:
-        """
-        Generates random list of drugs available for purchase for this particular day
-        """
-        for drug in [Weed, Luuds, Coke, Molly, Shrooms, Acid, Meth, Heroin, Olysio]:
+        """Generate list of drugs available for purchase for this particular day."""
+        for drug in DRUGS:
             d = drug()
             self._drugs[d.name] = d
 
     def buy(self, drug: str, quantity: int) -> None:
-        """
-        Interface for player to buy a drug.
+        """Create interface for player to buy a drug.
+
         Decrements the amount available upon purchase.
         :param drug: str
         :param quantity: int
@@ -58,56 +45,57 @@ class Day:
         self.player.buy_drugs(self._drugs[drug], quantity)
 
     def sell(self, drug: str, quantity: int) -> None:
-        """
-        Interface for player to sell a drug
-        :param drug:
-        :param quantity:
+        """Create interface for player to sell a drug.
+
+        :param drug: drug name
+        :param quantity: quantity to sell
         """
         price = self._drugs[drug].price
         self.player.sell(drug, quantity, price)
 
     def get_drugs(self):
-        """
+        """Return available drugs.
+
         Day._drugs has a signature of dict[str: Drug]
         """
         return self._drugs
 
     def print_offerings(self) -> None:
-        """
-        Prints current offerings amounts and price
-        """
+        """Print current offerings amounts and prices."""
 
         def spacer(str_len: int, amount: int) -> str:
-            """
-            Pads string length with spaces to create a uniformly spaced grid
+            """Pad string length with spaces to create a uniformly spaced grid.
+
             :param str_len: int length of string
             :param amount: int length up to which to pad
             :return: spaces and a `|` at the end of the spacer
             """
             return ((amount - str_len) * " ") + "|"
 
-        title_bar = "#) | Item    | Price | Avail | Max |"
+        title_bar = "#)  | Item     | Price   | Avail | Max |"
         print(title_bar)
         print(len(title_bar) * "+")
         for index, (_, drug) in enumerate(self._drugs.items()):
+            spaces = "  " if index + 1 <= 9 else " "
             max_amount = min((self.player.money // drug.price), drug.quantity)
-            name = f"{index + 1}) | {drug.name}"
-            name = "".join([name, spacer(len(name), 13)])
-            price = f"${drug.price}{spacer(len(str(drug.price)), 5)}"
+            name = f"{index + 1}){spaces}| {drug.name}"
+            name = "".join([name, spacer(len(name), 15)])
+            price = f"{drug.formatted_price}{spacer(len(str(drug.formatted_price)), 8)}"
             avail = f"{drug.quantity}{spacer(len(str(drug.quantity)), 6)}"
             max_amt = f"{max_amount} {spacer(len(str(max_amount)), 3)}"
             print(f"{name} {price} {avail} {max_amt}")
 
     def get_price(self, drug: str) -> int:
-        """
+        """Return price of a specific drug.
+
         :param drug: name of drug, str
         :return price of drug, int
         """
         return self._drugs[drug].price
 
     def _generate_event(self) -> None:
-        """
-        Randomly generates events
+        """Randomly generates events.
+
         There are three types of events:
             Robber
              * Takes a little money / product from player
@@ -120,8 +108,8 @@ class Day:
         """
 
         def get_chance(number: int) -> bool:
-            """
-            Gets random number from 1-number, returns if the number chosen is 1
+            """ Return if a randomly chosen number is 1
+
             :param number:
             """
             return randint(1, number) == 1

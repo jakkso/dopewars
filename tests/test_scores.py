@@ -11,7 +11,7 @@ def test_add_score() -> None:
     """
     s = Scores("")
     s.list = [(100, "al"), (99, "bob"), (101, "charlie"), (105, "dave"), (55, "eric")]
-    s.sort()
+    s._sort()
     assert s.list == [
         (105, "dave"),
         (101, "charlie"),

@@ -16,7 +16,7 @@ def test_day_init() -> None:
     """
     p = Player("bob", 5000)
     nyc = Day("NYC", p)
-    assert len(nyc._drugs) == 9
+    assert len(nyc._drugs) == 10
     for _, drug in nyc._drugs.items():
         assert isinstance(drug, Drug)
 

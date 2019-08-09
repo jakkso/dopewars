@@ -13,7 +13,7 @@ def test_drug() -> None:
     soma = redo_surge(Drug("Soma", 100, 12), None)
     assert 112 >= soma.price >= 88  # Due to jitter, price won't be less than 100 +/- 12
     assert "Soma price: " in str(soma)
-    with raises(RuntimeError):
+    with raises(ValueError):
         Drug("Soma", -1, 2)
         Drug("Soma", 12, 0)
 
